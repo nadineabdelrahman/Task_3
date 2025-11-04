@@ -46,7 +46,15 @@ export default function AllPerks() {
     
     // This effect depends on [perks], so it re-runs whenever perks changes
   }, [perks]) // Dependency: re-run when perks array changes
-
+  useEffect(() => {
+    const t = setTimeout(() => {
+      loadAllPerks()
+    }, 400) // delay to avoid calling API every keystroke
+  
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, merchantFilter])
+  
   
   async function loadAllPerks() {
     // Reset error state before new request
@@ -81,6 +89,10 @@ export default function AllPerks() {
     }
   }
 
+  useEffect(() => {
+    loadAllPerks()
+   
+  }, [])
   // ==================== EVENT HANDLERS ====================
 
   
@@ -136,6 +148,8 @@ export default function AllPerks() {
                 type="text"
                 className="input"
                 placeholder="Enter perk name..."
+                value={searchQuery}                
+  onChange={(e) => setSearchQuery(e.target.value)} 
                 
               />
               <p className="text-xs text-zinc-500 mt-1">
@@ -151,6 +165,8 @@ export default function AllPerks() {
               </label>
               <select
                 className="input"
+                value={merchantFilter}                       
+                onChange={(e) => setMerchantFilter(e.target.value)} 
                 
               >
                 <option value="">All Merchants</option>
